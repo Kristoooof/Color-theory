@@ -1,0 +1,740 @@
+/* =====================================================
+   SZÍNEK – EZEKET VÁLTOZTATJA A JAVASCRIPT
+   A JS a :root-ban lévő három változó értékét írja át,
+   a többi CSS pedig var(--valtozo) formában használja.
+   ===================================================== */
+
+/* A :root az egész oldal "gyökere". Az itt megadott változókat
+   (amelyek -- jellel kezdődnek) az oldal bármelyik pontján használhatjuk. */
+:root {
+  --fo-szin: #ffffff;          /* fő szín = az oldal háttere */
+  --masodlagos-szin: #38bdf8;  /* másodlagos szín = fejléc, lábléc, keretek, gombok */
+  --betu-szin: #111111;        /* betűszín */
+
+  /* Ezek a fenti háromból számolódnak, így velük együtt változnak.
+     A color-mix két színt kever össze: itt a betűszín 5%-át a fő színhez. */
+  --kartya-hatter: color-mix(in srgb, var(--betu-szin) 5%, var(--fo-szin));   /* a kártyák háttere */
+  --halvany-vonal: color-mix(in srgb, var(--betu-szin) 25%, var(--fo-szin));  /* halvány keretek */
+
+  /* Betűtípusok. Ha az első nem tölt be, a böngésző a következőt próbálja. */
+  --font-cim: "Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;                    /* címek */
+  --font-szoveg: "Figtree", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;           /* folyó szöveg */
+  --font-kod: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;                      /* színkódok */
+
+  /* Oldalsó margó: legalább 16px, telefonon a kijelző szélső sávjait is kerüli. */
+  --margo-bal: max(16px, env(safe-area-inset-left, 0px));
+  --margo-jobb: max(16px, env(safe-area-inset-right, 0px));
+}
+
+/* Minden elemnél a méret (width/height) a belső margót és a keretet is tartalmazza.
+   Így könnyebb kiszámolni az elemek méretét. */
+* {
+  box-sizing: border-box;
+}
+
+/* Az egész oldal alapbeállításai */
+body {
+  margin: 0;                                    /* a böngésző alap külső margóját kikapcsoljuk */
+  font-family: var(--font-szoveg);
+  font-size: 16px;
+  line-height: 1.55;                            /* sormagasság: a sorok kényelmesen olvashatók */
+  background-color: var(--fo-szin);             /* az oldal háttere = fő szín */
+  color: var(--betu-szin);                      /* az oldal szövege = betűszín */
+  transition: background-color 0.3s, color 0.3s; /* lágy színváltás */
+}
+
+/* Billentyűzettel (Tab) is látszik, melyik elem van kijelölve: vastag körvonal. */
+:focus-visible {
+  outline: 3px solid var(--betu-szin);
+  outline-offset: 3px;
+}
+
+/* A <code> elemek (pl. #3b82f6) szélesség-egyenlő betűtípust kapnak. */
+code {
+  font-family: var(--font-kod);
+  font-size: 0.9em;
+}
+
+/* A h2 és h3 címek közös beállításai */
+h2, h3 {
+  font-family: var(--font-cim);
+  text-wrap: balance; /* a cím sorai egyenletesen törnek, nem marad egy szó egyedül a végén */
+}
+
+h2 {
+  font-size: clamp(1.4rem, 3.5vw, 1.8rem); /* min, ideális, max méret: az ablak szélességéhez igazodik */
+  line-height: 1.15;
+  margin: 0 0 12px;
+}
+
+h3 {
+  font-size: 1.1rem;
+  margin: 0 0 10px;
+}
+
+/* ---------- Fejléc, spektrum-csík, lábléc ---------- */
+
+/* A fejléc és a lábléc közös kinézete: másodlagos szín háttér, betűszín szöveg */
+header,
+footer {
+  background-color: var(--masodlagos-szin);
+  color: var(--betu-szin);
+  padding-inline: var(--margo-bal) var(--margo-jobb); /* bal és jobb belső margó */
+  transition: background-color 0.3s, color 0.3s;
+}
+
+header {
+  padding-block: clamp(36px, 7vw, 72px) clamp(28px, 5vw, 48px); /* felső és alsó belső margó */
+}
+
+footer {
+  padding-block: 24px;
+}
+
+/* A fejléc és lábléc tartalma legfeljebb 960px széles, és középre kerül */
+.belso {
+  max-width: 960px;
+  margin: 0 auto; /* auto = bal és jobb oldalon egyenlő üres hely, vagyis középre igazít */
+}
+
+/* A kis felirat a cím felett: nagybetűs, ritkított betűközzel */
+.felirat {
+  margin: 0 0 12px;
+  font-family: var(--font-kod);
+  font-size: 0.8rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* Az oldal fő címe */
+h1 {
+  margin: 0 0 16px;
+  font-family: var(--font-cim);
+  font-weight: 800;
+  font-size: clamp(2.3rem, 8vw, 4.2rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+/* A fejléc alatti bevezető mondat */
+.bevezeto {
+  max-width: 56ch; /* ch = kb. egy karakter szélessége: legfeljebb 56 karakter széles sorok */
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+footer p {
+  margin: 0;
+}
+
+/* A színkör összes színe egy csíkban (ez fix, nem változik a témával) */
+.spektrum {
+  height: 12px;
+  background: linear-gradient(90deg,
+    hsl(0 90% 55%), hsl(35 95% 55%), hsl(58 95% 52%), hsl(120 70% 45%),
+    hsl(180 80% 42%), hsl(220 85% 56%), hsl(275 75% 56%), hsl(330 85% 56%));
+}
+
+/* ---------- Tartalom ---------- */
+
+/* A fő tartalom: középre igazított, egymás alatt a kártyák, köztük 24px hely */
+main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding-block: 28px 40px;
+  padding-inline: var(--margo-bal) var(--margo-jobb);
+  display: grid; /* a grid a gyerekelemeket rácsba rendezi, itt egyetlen oszlopba */
+  gap: 24px;     /* a kártyák közti távolság */
+}
+
+/* Egy kártya (minden téma külön kártyán van) */
+.kartya {
+  min-width: 0; /* megakadályozza, hogy a hosszú tartalom kitolja a kártyát az oldalból */
+  background-color: var(--kartya-hatter);
+  border: 2px solid var(--masodlagos-szin); /* a keret a másodlagos szín */
+  border-radius: 18px;                      /* lekerekített sarkok */
+  padding: clamp(18px, 3vw, 30px);          /* belső margó, az ablak szélességéhez igazodik */
+  transition: border-color 0.3s, background-color 0.3s;
+}
+
+/* A kártyák címe alatti magyarázó szöveg */
+.leiras {
+  max-width: 64ch;
+  margin: 0 0 18px;
+}
+
+/* A "majdnem szürke" figyelmeztetés */
+.jegyzet {
+  margin: 16px 0 0;
+  font-weight: 700;
+}
+
+/* A harmónia-kártyák tárolója (a JS tölti fel) */
+.harmoniak {
+  display: grid;
+  gap: 24px;
+}
+
+/* ---------- Bevezető: két oszlop ---------- */
+
+/* Bal oldalon a szöveg, jobb oldalon a keverő.
+   minmax(0, 1.1fr) = az első oszlop kicsit szélesebb, mint a második. */
+.ketoszlop {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 32px;
+  align-items: start; /* mindkét oszlop felülre igazodik */
+}
+
+.szoveg p {
+  margin: 0 0 12px;
+  max-width: 62ch;
+}
+
+/* HEX / RGB / HSL magyarázat lista */
+dl {
+  margin: 18px 0 0;
+}
+
+dt {
+  font-family: var(--font-kod);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+}
+
+dd {
+  margin: 2px 0 12px;
+}
+
+/* ---------- RGB-keverő ---------- */
+
+/* A keverő doboza: halvány kerettel, elemei egymás alatt, 10px távolsággal */
+.kevero {
+  min-width: 0;
+  border: 1px solid var(--halvany-vonal);
+  border-radius: 14px;
+  padding: 18px;
+  display: grid;
+  gap: 10px;
+}
+
+.kevero h3 {
+  margin: 0;
+}
+
+/* A kikevert színt mutató téglalap (a színét a JS állítja) */
+.kevero-minta {
+  height: 110px;
+  border-radius: 10px;
+  border: 1px solid var(--halvany-vonal);
+}
+
+/* A színkód szövege a téglalap alatt */
+.kevero-kod {
+  margin: 0;
+  font-family: var(--font-kod);
+  font-size: 0.9rem;
+  overflow-wrap: anywhere; /* ha túl hosszú, bárhol törhet, így nem lóg ki */
+}
+
+/* Egy csúszka sora: bal oldalon a betű, középen a csúszka, jobb oldalon a szám.
+   3 oszlop: 1.4rem széles, a maradék hely, 3 karakter széles. */
+.csuszka-sor {
+  display: grid;
+  grid-template-columns: 1.4rem minmax(0, 1fr) 3ch;
+  gap: 10px;
+  align-items: center; /* függőlegesen középre */
+  font-family: var(--font-kod);
+}
+
+.csuszka-sor input {
+  width: 100%;
+}
+
+/* A csúszka melletti szám jobbra igazítva; a tabular-nums miatt minden számjegy ugyanolyan széles,
+   így a szám nem "ugrál" változáskor. */
+.csuszka-sor output {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* A három csúszka saját színe: vörös, zöld, kék */
+.csuszka-sor.r input { accent-color: #e11d48; }
+.csuszka-sor.g input { accent-color: #16a34a; }
+.csuszka-sor.b input { accent-color: #2563eb; }
+
+/* A gyors példa gombok sora: ha nem férnek el egymás mellett, új sorba törnek */
+.gombsor {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ---------- Gombok ---------- */
+
+/* Minden gomb közös kinézete: lekerekített, másodlagos színű keret */
+.gomb {
+  font: inherit;                           /* a gomb is az oldal betűtípusát használja */
+  font-size: 0.9rem;
+  font-weight: 700;
+  padding: 8px 14px;
+  border-radius: 999px;                    /* nagyon nagy érték = teljesen lekerekített */
+  border: 2px solid var(--masodlagos-szin);
+  background-color: transparent;
+  color: var(--betu-szin);
+  cursor: pointer;                         /* kéz alakú egérmutató */
+  transition: background-color 0.2s;
+}
+
+/* Ha az egér a gomb fölött van, kitöltődik a másodlagos színnel */
+.gomb:hover {
+  background-color: var(--masodlagos-szin);
+}
+
+/* ---------- "Ugyanaz a szín" bemutatók ---------- */
+
+/* A négy bemutató egymás alatt, 32px távolsággal */
+.demok {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 32px;
+}
+
+/* Egy bemutató: cím, kép, magyarázat, színkód, gomb egymás alatt */
+.demo {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.demo h3 {
+  margin: 0;
+}
+
+.demo p {
+  margin: 0;
+}
+
+/* A gomb ne húzódjon végig a teljes szélességen, hanem a bal oldalon maradjon */
+.demo .gomb {
+  align-self: flex-start;
+  margin-top: auto;
+}
+
+/* Két nagy, egyszínű háttér egymás mellett, bennük egy-egy négyzet a külső szélhez közel */
+.par {
+  --kante: 100px; /* a négyzetek oldalhossza */
+  --szel: 10px;   /* a négyzetek távolsága a külső széltől */
+  position: relative;               /* az összekötő csík ehhez képest pozícionálódik */
+  display: grid;
+  grid-template-columns: 1fr 1fr;   /* két egyforma széles panel */
+  border-radius: 12px;
+  overflow: hidden;                 /* ami kilógna a lekerekített sarkokból, azt levágja */
+  border: 1px solid var(--halvany-vonal);
+}
+
+/* Egy panel (az egyik háttérszín) */
+.par-panel {
+  min-height: 300px;
+  display: grid;
+  align-items: center;           /* a négyzet függőlegesen középen van */
+  padding-inline: var(--szel);   /* a bal és jobb oldali 10px távolság a szélektől */
+}
+
+.par-panel:first-child {
+  justify-items: start;  /* a bal négyzet a bal szélen */
+}
+
+.par-panel:nth-child(2) {
+  justify-items: end;    /* a jobb négyzet a jobb szélen */
+}
+
+/* A négyzet: mérete a --kante változóból jön (ha az nincs megadva, 120px) */
+.negyzet {
+  display: block;
+  width: var(--kante, 120px);
+  height: var(--kante, 120px);
+}
+
+/* Az összekötő csík: ugyanolyan színű, mint a négyzetek, és végigér a két négyzet között */
+.hid {
+  position: absolute;  /* a .par-hoz képest szabadon elhelyezhető */
+  left: var(--szel);
+  right: var(--szel);
+  top: 50%;
+  height: var(--kante);
+  margin-top: calc(var(--kante) / -2); /* feljebb tolja a magasság felével, így függőlegesen középre kerül */
+  opacity: 0;                          /* alapból láthatatlan */
+  transition: opacity 0.3s;            /* lassan jelenik meg */
+}
+
+/* Ha a .par elemen rajta van az "osszekotve" osztály (a gombnyomás után), a csík látszik */
+.par.osszekotve .hid {
+  opacity: 1;
+}
+
+/* A "Játssz a háttérrel" rész nagyobb négyzete */
+.negyzet.nagy {
+  width: 110px;
+  height: 110px;
+}
+
+/* A bemutatók alatti színkód szövege */
+.kod {
+  font-family: var(--font-kod);
+  font-size: 0.85rem;
+}
+
+/* ---------- Háttér-játék ---------- */
+
+/* A játék doboza: felül vonal választja el a bemutatóktól */
+.jatek {
+  margin-top: 26px;
+  padding-top: 20px;
+  border-top: 1px solid var(--halvany-vonal);
+  display: grid;
+  gap: 10px;
+}
+
+.jatek h3,
+.jatek p {
+  margin: 0;
+}
+
+.jatek p {
+  max-width: 62ch;
+}
+
+/* A panel, aminek a háttérszínét a csúszkák változtatják (a színt a JS állítja,
+   az itt megadott szín csak a kezdőérték) */
+.jatek-panel {
+  height: 280px;
+  display: grid;
+  place-items: center;  /* a négyzet pontosan középen */
+  border-radius: 12px;
+  border: 1px solid var(--halvany-vonal);
+  background-color: hsl(0, 70%, 45%);
+}
+
+/* A játék csúszkáinál a bal oszlop szélesebb, mert ott szöveg van (nem egy betű) */
+.jatek .csuszka-sor {
+  grid-template-columns: 8.5rem minmax(0, 1fr) 4.5ch;
+  font-family: var(--font-szoveg);
+}
+
+/* ---------- Színválasztó ---------- */
+
+/* Egy sorban: választó + gomb, színadatok, színkör. Ha nem férnek el, új sorba törnek. */
+.valaszto-sor {
+  display: flex;
+  align-items: center;
+  gap: 24px 32px;  /* függőleges és vízszintes távolság */
+  flex-wrap: wrap;
+}
+
+/* A színválasztó és a "Véletlen szín" gomb egymás alatt */
+.valaszto-bal {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+/* A böngésző színválasztója: nagyobb négyzet, keret nélkül */
+#szinvalaszto {
+  width: 120px;
+  height: 120px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+/* A színválasztó belsejének szépítése (a -webkit- Chrome/Safari, a -moz- Firefox) */
+#szinvalaszto::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+#szinvalaszto::-webkit-color-swatch {
+  border: 3px solid var(--betu-szin);
+  border-radius: 20px;
+}
+
+#szinvalaszto::-moz-color-swatch {
+  border: 3px solid var(--betu-szin);
+  border-radius: 20px;
+}
+
+/* Az alapszín adatai (HEX, RGB, HSL) */
+#szinadatok {
+  flex: 1 1 200px; /* kitölti a szabad helyet, de legalább 200px széles */
+  min-width: 0;
+}
+
+#szinadatok p {
+  margin: 4px 0;
+  font-family: var(--font-kod);
+  font-size: 1.05rem;
+}
+
+/* A "HEX", "RGB", "HSL" felirat: halványabb, és fix szélességű, hogy az értékek egy vonalban legyenek */
+#szinadatok span {
+  display: inline-block;
+  width: 4ch;
+  opacity: 0.65;
+}
+
+/* ---------- Színkör ---------- */
+
+/* A színkör doboza: 220 × 220 px, a gyerekei (korong és SVG) egymásra kerülnek */
+.kor {
+  position: relative;
+  width: 220px;
+  height: 220px;
+  flex: none;           /* flex sorban sem zsugorodik össze */
+  cursor: grab;         /* "megfogható" egérmutató */
+  touch-action: none;   /* húzás közben ne görgessen az oldal */
+  user-select: none;    /* húzás közben ne jelölje ki a szöveget */
+}
+
+/* Amíg az egérgomb le van nyomva, "markoló" egérmutató */
+.kor:active {
+  cursor: grabbing;
+}
+
+/* A színes korong: a JS tölti ki a háttérét (conic + radial gradient) */
+.kor-gyuru {
+  position: absolute;
+  inset: 0;                                  /* kitölti a teljes .kor dobozt */
+  border-radius: 50%;                        /* a négyzetből kör lesz */
+  box-shadow: 0 0 0 1px var(--halvany-vonal); /* vékony körvonal */
+}
+
+/* A pontokat és vonalakat tartalmazó SVG a korong fölött van, ugyanakkora */
+.kor svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* ---------- Harmónia kártyák ---------- */
+
+/* Bal oldalon a színkör (220px), jobb oldalon a leírás és a színek */
+.harmonia {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 28px;
+  align-items: center;
+}
+
+.harmonia-jobb {
+  min-width: 0;
+}
+
+/* A színkártyák sora: a --db változó (a JS állítja be) megadja, hány oszlop legyen */
+.szinek {
+  display: grid;
+  grid-template-columns: repeat(var(--db, 3), minmax(0, 1fr));
+  gap: 12px;
+}
+
+/* Egy színkártya (gomb, mert rá lehet kattintani a HEX kód másolásához) */
+.minta {
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  min-width: 0;
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;  /* felül a szín, alatta a szöveg */
+  background-color: transparent;
+  border: 1px solid var(--halvany-vonal);
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+/* Ha az egér fölötte van, a keret sötétebb lesz */
+.minta:hover {
+  border-color: var(--betu-szin);
+}
+
+/* A színes rész (a színt a JS állítja) */
+.minta-szin {
+  display: block;
+  height: 92px;
+}
+
+/* A szín neve és kódja alatta */
+.minta-szoveg {
+  padding: 8px 10px 10px;
+}
+
+.minta-nev {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.minta-hex {
+  display: block;
+  margin-top: 2px;
+  font-family: var(--font-kod);
+  font-size: 0.85rem;
+}
+
+/* ---------- Kontraszt-dobozok ---------- */
+
+/* Két doboz egymás mellett; ha nem férnek el (240px alatt), egymás alá kerülnek */
+.kontraszt-sor {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px;
+}
+
+.kontraszt-doboz {
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid var(--halvany-vonal);
+}
+
+.kontraszt-doboz strong {
+  display: block;
+  font-family: var(--font-cim);
+  font-size: 1.4rem;
+}
+
+.kontraszt-doboz p {
+  margin: 4px 0 10px;
+  font-size: 1.1rem;
+}
+
+/* ---------- A 3 legördülő lista ---------- */
+
+/* A három lista egymás mellett; ha szűkös a hely, egymás alá kerülnek */
+.listak {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 18px;
+  margin-bottom: 20px;
+}
+
+/* Egy lista felirata és a lista egy oszlopban */
+.listak label {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* a listák így egy vonalban maradnak */
+  gap: 6px;
+  font-weight: 700;
+}
+
+/* A kis színes négyzet és a lista egy sorban */
+.valaszto-egyseg {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* A listák és az üzenetek mindig fix színűek, hogy akkor is olvashatók
+   maradjanak, ha valaki szörnyű színeket választ az oldalnak. */
+select {
+  flex: 1;
+  min-width: 0;
+  padding: 9px;
+  font: inherit;
+  background-color: #ffffff;
+  color: #111111;
+  border: 2px solid #555555;
+  border-radius: 8px;
+}
+
+/* A kis négyzet a lista mellett: a kiválasztott színt mutatja (a színt a JS állítja) */
+.minta-negyzet {
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  border: 2px solid #555555;
+  flex-shrink: 0; /* nem nyomódik össze, ha szűkös a hely */
+}
+
+/* ---------- Üzenetek ---------- */
+
+/* A lista pontjai és a külső margók eltűnnek */
+#uzenetek {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Egy üzenet: színes doboz, bal oldalon vastag csíkkal */
+#uzenetek li {
+  padding: 10px 14px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  border-left: 8px solid;
+  color: #111111;
+}
+
+/* Jó kontraszt: zöld */
+#uzenetek li.jo {
+  background-color: #dcfce7;
+  border-color: #16a34a;
+}
+
+/* Figyelmeztetés: sárga */
+#uzenetek li.figyelem {
+  background-color: #fef9c3;
+  border-color: #ca8a04;
+}
+
+/* Rossz kontraszt: piros */
+#uzenetek li.rossz {
+  background-color: #fee2e2;
+  border-color: #dc2626;
+}
+
+/* ---------- Keskeny kijelző ---------- */
+
+/* 760px-nél keskenyebb kijelzőn (telefon) átrendeződik az oldal */
+@media (max-width: 760px) {
+  /* kisebb négyzetek és alacsonyabb panelek */
+  .par {
+    --kante: 64px;
+  }
+
+  .par-panel {
+    min-height: 220px;
+  }
+
+  /* a bevezető két oszlopa egymás alá kerül */
+  .ketoszlop {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* a színkör a színkártyák fölé kerül, középre */
+  .harmonia {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+  }
+
+  .harmonia-jobb {
+    width: 100%;
+  }
+
+  /* a színkártyák annyi oszlopba rendeződnek, amennyi elfér (legalább 96px széles kártyák) */
+  .szinek {
+    grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+  }
+}
+
+/* Ha a felhasználó a rendszerében kikapcsolta az animációkat, nálunk sem lesz színváltási animáció */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}
