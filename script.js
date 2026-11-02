@@ -1,7 +1,7 @@
 // =====================================================
 // 1. SEGÉDFÜGGVÉNYEK (színek átváltása, kontraszt számolás)
 // =====================================================
-
+//
 // "#3b82f6" -> { r: 59, g: 130, b: 246 }
 function hexToRgb(hex) {
   const r = parseInt(hex.slice(1, 3), 16);
